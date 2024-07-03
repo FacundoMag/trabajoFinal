@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import './Login.css'
 
 export default class Login extends Component {
   state = {
@@ -22,7 +23,7 @@ export default class Login extends Component {
 
   render() {
     return (
-      <div>
+      <div className="container">
         <h2>Login</h2>
         <input name="user" placeholder="Usuario" onChange={this.manejarCambio} />
         <input name="pass" placeholder="Contraseña" onChange={this.manejarCambio} type="password" />

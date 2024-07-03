@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import './GestionPersonas.css';
 
 class GestionarPersonas extends Component {
   state = {
@@ -106,7 +107,7 @@ class GestionarPersonas extends Component {
     const { personas, nombres, apellidos, documento, editando } = this.state;
 
     return (
-      <div>
+      <div className='container'>
         <h2>Gestionar Personas</h2>
         <form onSubmit={this.manejarSubmit}>
           <input
