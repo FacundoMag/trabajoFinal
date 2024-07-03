@@ -3,9 +3,9 @@ import axios from 'axios';
 
 class AgregarPersona extends Component {
   state = {
-    nombres: '',
-    apellidos: '',
-    documento: ''
+    nombres: this.props.persona ? this.props.persona.nombres : '',
+    apellidos: this.props.persona ? this.props.persona.apellidos : '',
+    documento: this.props.persona ? this.props.persona.documento : ''
   };
 
   manejarChange = (event) => {
@@ -17,26 +17,42 @@ class AgregarPersona extends Component {
   manejarSubmit = (event) => {
     event.preventDefault();
     const { nombres, apellidos, documento } = this.state;
-    const { token, onAddPersona } = this.props;
+    const { persona, token, onAddPersona, onUpdatePersona } = this.props;
 
     const datosPersona = { nombres, apellidos, documento };
 
-    axios.post('https://personas.ctpoba.edu.ar/api/personas', datosPersona, {
-      headers: {
-        Authorization: `${token}`
-      }
-    })
-    .then(response => {
-      onAddPersona(response.data.persona);
-      this.setState({ nombres: '', apellidos: '', documento: '' }); // Reset form
-    })
-    .catch(error => {
-      console.error('Error al agregar persona:', error.response ? error.response.data : error.message);
-    });
+    if (persona) {
+      const url = `https://personas.ctpoba.edu.ar/api/personas/${persona._id}`;
+      axios.put(url, datosPersona, {
+        headers: {
+          Authorization: `${token}`
+        }
+      })
+      .then(response => {
+        onUpdatePersona(persona._id, response.data.persona);
+      })
+      .catch(error => {
+        console.error('Error al editar persona:', error.response ? error.response.data : error.message);
+      });
+    } else {
+      const url = 'https://personas.ctpoba.edu.ar/api/personas';
+      axios.post(url, datosPersona, {
+        headers: {
+          Authorization: `${token}`
+        }
+      })
+      .then(response => {
+        onAddPersona(response.data.persona);
+      })
+      .catch(error => {
+        console.error('Error al agregar persona:', error.response ? error.response.data : error.message);
+      });
+    }
   };
 
   render() {
     const { nombres, apellidos, documento } = this.state;
+    const { persona } = this.props;
 
     return (
       <form onSubmit={this.manejarSubmit}>
@@ -46,7 +62,6 @@ class AgregarPersona extends Component {
           value={nombres}
           onChange={this.manejarChange}
           placeholder="Nombres"
-          required
         />
         <input
           type="text"
@@ -54,7 +69,6 @@ class AgregarPersona extends Component {
           value={apellidos}
           onChange={this.manejarChange}
           placeholder="Apellidos"
-          required
         />
         <input
           type="text"
@@ -62,9 +76,8 @@ class AgregarPersona extends Component {
           value={documento}
           onChange={this.manejarChange}
           placeholder="Documento"
-          required
         />
-        <button type="submit">Agregar Persona</button>
+        <button type="submit">{persona ? 'Actualizar Persona' : 'Agregar Persona'}</button>
       </form>
     );
   }
