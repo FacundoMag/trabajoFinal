@@ -23,6 +23,7 @@ class AgregarPersona extends Component {
     const datosPersona = { nombres, apellidos, documento };
 
     if (persona) {
+      // Actualizar persona existente
       axios.put(`https://personas.ctpoba.edu.ar/api/personas/${persona._id}`, datosPersona, {
         headers: {
           Authorization: `${token}`
@@ -35,6 +36,7 @@ class AgregarPersona extends Component {
         console.error('Error al editar persona:', error.response ? error.response.data : error.message);
       });
     } else {
+      // Agregar nueva persona
       axios.post('https://personas.ctpoba.edu.ar/api/personas', datosPersona, {
         headers: {
           Authorization: `${token}`
@@ -76,7 +78,7 @@ class AgregarPersona extends Component {
           onChange={this.manejarChange}
           placeholder="Documento"
         />
-        <button type="submit">{persona ? 'Actualizar Persona' : 'Agregar Persona'}</button>
+        <button type="submit">{persona ? 'Editar Persona' : 'Agregar Persona'}</button>
       </form>
     );
   }

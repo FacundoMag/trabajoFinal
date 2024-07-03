@@ -14,6 +14,22 @@ class EditarPersona extends Component {
     mail: ""
   };
 
+  componentDidMount() {
+    const { persona } = this.props;
+    if (persona) {
+      this.setState({
+        id: persona.id,
+        dni: persona.documento,
+        nombre: persona.nombres,
+        apellido: persona.apellidos,
+        fecNac: persona.fechaNac,
+        numCel: persona.telefono,
+        domicilio: persona.domicilio,
+        mail: persona.mail
+      });
+    }
+  }
+
   manejarChange = (event) => {
     this.setState({
       [event.target.name]: event.target.value
@@ -25,11 +41,15 @@ class EditarPersona extends Component {
     const { token } = this.props;
     const { id, dni, nombre, apellido, fecNac, numCel, domicilio, mail } = this.state;
 
-    this.editarPersona(token, id, dni, nombre, apellido, fecNac, numCel, domicilio, mail);
+    if (id) {
+      this.editarPersona(token, id, dni, nombre, apellido, fecNac, numCel, domicilio, mail);
+    } else {
+      console.error('ID de la persona no está definido');
+    }
   };
 
   editarPersona = (token, id, dni, nombre, apellido, fecNac, numCel, domicilio, mail) => {
-    const url = `https://personas.ctpoba.edu.ar/api/personas/${id}`;
+    const url = `https://personas.ctpoba.edu.ar/api/personas/`;
     const data = {
       documento: dni,
       nombres: nombre,
@@ -49,13 +69,12 @@ class EditarPersona extends Component {
       .then(response => {
         if (response.data.status === "ok") {
           alert("Se ha actualizado correctamente los datos de la persona");
-          // Aquí podrías hacer alguna acción adicional si es necesario
         } else {
           alert("Hubo un inconveniente al editar los datos de la persona.");
         }
       })
       .catch(error => {
-        console.error('Error al editar persona:', error);
+        console.error('Error al editar persona:', error.response ? error.response.data : error.message);
       });
   };
 

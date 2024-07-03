@@ -42,6 +42,7 @@ class GestionarPersonas extends Component {
     const datosPersona = { nombres, apellidos, documento };
 
     if (editando) {
+      // Editar persona existente
       axios.put(`https://personas.ctpoba.edu.ar/api/personas/${personaId}`, datosPersona, {
         headers: {
           Authorization: `${this.props.token}`
@@ -55,7 +56,8 @@ class GestionarPersonas extends Component {
         console.error('Error al editar persona:', error);
       });
     } else {
-      axios.post('https://personas.ctpoba.edu.ar/api/personas', datosPersona, {
+      // Agregar nueva persona
+      axios.post('https://personas.ctpoba.edu.ar/api/personas', nombres, apellidos, documento, {
         headers: {
           Authorization: `${this.props.token}`
         }
@@ -71,6 +73,7 @@ class GestionarPersonas extends Component {
   };
 
   manejarEditar = (persona) => {
+    // Cargar datos de la persona seleccionada para editar
     this.setState({
       nombres: persona.nombres,
       apellidos: persona.apellidos,
@@ -80,26 +83,20 @@ class GestionarPersonas extends Component {
     });
   };
 
-  manejarEliminar = (persona_id) => {
-    const url = `https://personas.ctpoba.edu.ar/api/personas/${persona_id}`;
-    const config = {
+  manejarEliminar = (personaId) => {
+    // Eliminar persona por ID
+    axios.delete(`https://personas.ctpoba.edu.ar/api/personas/${personaId}`, {
       headers: {
-        Authorization: this.props.token
+        Authorization: `${this.props.token}`
       }
-    };
-  
-    axios.delete(url, config)
-      .then((response) => {
-        if (response.data.status === "ok") {
-          alert("Se ha eliminado correctamente a la persona");
-          this.cargarPersonas();
-        } else {
-          alert('Hubo un error al eliminar a la persona.');
-        }
-      })
-      .catch((error) => {
-        console.error('Error al eliminar persona:', error);
-      });
+    })
+    .then(() => {
+      this.cargarPersonas();
+      console.log('Persona eliminada correctamente');
+    })
+    .catch(error => {
+      console.error('Error al eliminar persona:', error);
+    });
   };
   
 
@@ -138,7 +135,7 @@ class GestionarPersonas extends Component {
         </form>
         <ul>
           {personas.map((persona) => (
-            <li key={persona.persona_id}>
+            <li key={persona._id}>
               {persona.nombres} {persona.apellidos} - {persona.documento}
               <button onClick={() => this.manejarEditar(persona)}>Editar</button>
               <button onClick={() => this.manejarEliminar(persona.persona_id)}>Eliminar</button>
