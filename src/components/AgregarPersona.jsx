@@ -3,9 +3,9 @@ import axios from 'axios';
 
 class AgregarPersona extends Component {
   state = {
-    nombres: this.props.persona ? this.props.persona.nombres : '',
-    apellidos: this.props.persona ? this.props.persona.apellidos : '',
-    documento: this.props.persona ? this.props.persona.documento : ''
+    nombres: '',
+    apellidos: '',
+    documento: ''
   };
 
   manejarChange = (event) => {
@@ -17,40 +17,26 @@ class AgregarPersona extends Component {
   manejarSubmit = (event) => {
     event.preventDefault();
     const { nombres, apellidos, documento } = this.state;
-    const { persona, token, onAddPersona, onUpdatePersona } = this.props;
+    const { token, onAddPersona } = this.props;
 
     const datosPersona = { nombres, apellidos, documento };
 
-    if (persona) {
-      axios.put(`https://personas.ctpoba.edu.ar/api/personas/${persona._id}`, datosPersona, {
-        headers: {
-          Authorization: `${token}`
-        }
-      })
-      .then(response => {
-        onUpdatePersona(persona._id, response.data.persona);
-      })
-      .catch(error => {
-        console.error('Error al editar persona:', error.response ? error.response.data : error.message);
-      });
-    } else {
-      axios.post('https://personas.ctpoba.edu.ar/api/personas', datosPersona, {
-        headers: {
-          Authorization: `${token}`
-        }
-      })
-      .then(response => {
-        onAddPersona(response.data.persona);
-      })
-      .catch(error => {
-        console.error('Error al agregar persona:', error.response ? error.response.data : error.message);
-      });
-    }
+    axios.post('https://personas.ctpoba.edu.ar/api/personas', datosPersona, {
+      headers: {
+        Authorization: `${token}`
+      }
+    })
+    .then(response => {
+      onAddPersona(response.data.persona);
+      this.setState({ nombres: '', apellidos: '', documento: '' }); // Reset form
+    })
+    .catch(error => {
+      console.error('Error al agregar persona:', error.response ? error.response.data : error.message);
+    });
   };
 
   render() {
     const { nombres, apellidos, documento } = this.state;
-    const { persona } = this.props;
 
     return (
       <form onSubmit={this.manejarSubmit}>
@@ -60,6 +46,7 @@ class AgregarPersona extends Component {
           value={nombres}
           onChange={this.manejarChange}
           placeholder="Nombres"
+          required
         />
         <input
           type="text"
@@ -67,6 +54,7 @@ class AgregarPersona extends Component {
           value={apellidos}
           onChange={this.manejarChange}
           placeholder="Apellidos"
+          required
         />
         <input
           type="text"
@@ -74,8 +62,9 @@ class AgregarPersona extends Component {
           value={documento}
           onChange={this.manejarChange}
           placeholder="Documento"
+          required
         />
-        <button type="submit">{persona ? 'Actualizar Persona' : 'Agregar Persona'}</button>
+        <button type="submit">Agregar Persona</button>
       </form>
     );
   }

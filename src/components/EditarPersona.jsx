@@ -3,14 +3,14 @@ import axios from 'axios';
 
 class EditarPersona extends Component {
   state = {
-    id: 0,
-    dni: "",
-    nombre: "",
-    apellido: "",
-    fecNac: "",
-    numCel: "",
-    domicilio: "",
-    mail: ""
+    id: this.props.persona ? this.props.persona._id : '',
+    dni: this.props.persona ? this.props.persona.documento : '',
+    nombre: this.props.persona ? this.props.persona.nombres : '',
+    apellido: this.props.persona ? this.props.persona.apellidos : '',
+    fecNac: this.props.persona ? this.props.persona.fechaNac : '',
+    numCel: this.props.persona ? this.props.persona.telefono : '',
+    domicilio: this.props.persona ? this.props.persona.domicilio : '',
+    mail: this.props.persona ? this.props.persona.mail : ''
   };
 
   manejarChange = (event) => {
@@ -48,7 +48,7 @@ class EditarPersona extends Component {
       .then(response => {
         if (response.data.status === "ok") {
           alert("Se ha actualizado correctamente los datos de la persona");
-          // Aquí podrías hacer alguna acción adicional si es necesario
+          this.props.onUpdatePersona(id, response.data.persona); // Update parent state
         } else {
           alert("Hubo un inconveniente al editar los datos de la persona.");
         }
@@ -59,70 +59,81 @@ class EditarPersona extends Component {
   };
 
   render() {
+    const { dni, nombre, apellido, fecNac, numCel, domicilio, mail } = this.state;
+
     return (
       <div className='Cuadro'>
         <h2>EDITAR DATOS DE PERSONA</h2>
-        <input 
-          type="number" 
-          className='Dato' 
-          placeholder='ID del usuario'
-          onChange={(e) => this.setState({ id: e.target.value })}
-          required
-        />
-        <input 
-          type="text" 
-          className='Dato' 
-          placeholder='D.N.I'
-          onChange={(e) => this.setState({ dni: e.target.value })}
-          required
-        />
-        <input 
-          type="text" 
-          className='Dato' 
-          placeholder='Nombre' 
-          onChange={(e) => this.setState({ nombre: e.target.value })}
-          required
-        />
-        <input 
-          type="text" 
-          className='Dato' 
-          placeholder='Apellido' 
-          onChange={(e) => this.setState({ apellido: e.target.value })}
-          required
-        />
-        <input 
-          type="date" 
-          className='Dato'
-          style={{ width: '222.5px' }}
-          placeholder='Fecha de nacimiento' 
-          onChange={(e) => this.setState({ fecNac: e.target.value })}
-          required
-        />
-        <input 
-          type="number" 
-          className='Dato' 
-          placeholder='Numero de celular'
-          onChange={(e) => this.setState({ numCel: e.target.value })}
-          required
-        />
-        <input 
-          type="text" 
-          className='Dato' 
-          placeholder='Domicilio'
-          onChange={(e) => this.setState({ domicilio: e.target.value })}
-          required
-        />
-        <input 
-          type="text" 
-          className='Dato' 
-          placeholder='E-mail'
-          onChange={(e) => this.setState({ mail: e.target.value })}
-          required
-        />
-        <button
-          className='Boton'
-          onClick={this.manejarSubmit}
-        >Cambiar datos</button>
+        <form onSubmit={this.manejarSubmit}>
+          <input 
+            type="text" 
+            name="dni"
+            className='Dato' 
+            placeholder='D.N.I'
+            value={dni}
+            onChange={this.manejarChange}
+            required
+          />
+          <input 
+            type="text" 
+            name="nombre"
+            className='Dato' 
+            placeholder='Nombre' 
+            value={nombre}
+            onChange={this.manejarChange}
+            required
+          />
+          <input 
+            type="text" 
+            name="apellido"
+            className='Dato' 
+            placeholder='Apellido' 
+            value={apellido}
+            onChange={this.manejarChange}
+            required
+          />
+          <input 
+            type="date" 
+            name="fecNac"
+            className='Dato'
+            style={{ width: '222.5px' }}
+            placeholder='Fecha de nacimiento'
+            value={fecNac}
+            onChange={this.manejarChange}
+            required
+          />
+          <input 
+            type="text" 
+            name="numCel"
+            className='Dato' 
+            placeholder='Numero de celular'
+            value={numCel}
+            onChange={this.manejarChange}
+            required
+          />
+          <input 
+            type="text" 
+            name="domicilio"
+            className='Dato' 
+            placeholder='Domicilio'
+            value={domicilio}
+            onChange={this.manejarChange}
+            required
+          />
+          <input 
+            type="email"
+            name="mail"
+            className='Dato' 
+            placeholder='E-mail'
+            value={mail}
+            onChange={this.manejarChange}
+            required
+          />
+          <button
+            className='Boton'
+            type="submit"
+          >Cambiar datos</button>
+        </form>
       </div>
     );
   }

@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import AgregarPersona from './AgregarPersona';
+import EditarPersona from './EditarPersona';
 
 class GestionarPersonas extends Component {
   state = {
     personas: [],
-    nombres: '',
-    apellidos: '',
-    documento: '',
     editando: false,
-    personaId: null
+    personaEditando: null
   };
 
   componentDidMount() {
@@ -29,118 +28,73 @@ class GestionarPersonas extends Component {
     });
   };
 
-  manejarChange = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value
-    });
+  onAddPersona = (persona) => {
+    this.setState(prevState => ({
+      personas: [...prevState.personas, persona]
+    }));
   };
 
-  manejarSubmit = (event) => {
-    event.preventDefault();
-    const { nombres, apellidos, documento, editando, personaId } = this.state;
-    const datosPersona = { nombres, apellidos, documento };
-
-    if (editando) {
-      axios.put(`https://personas.ctpoba.edu.ar/api/personas/${personaId}`, datosPersona, {
-        headers: {
-          Authorization: `${this.props.token}`
-        }
-      })
-      .then(() => {
-        this.cargarPersonas();
-        this.setState({ nombres: '', apellidos: '', documento: '', editando: false, personaId: null });
-      })
-      .catch(error => {
-        console.error('Error al editar persona:', error);
-      });
-    } else {
-      axios.post('https://personas.ctpoba.edu.ar/api/personas', datosPersona, {
-        headers: {
-          Authorization: `${this.props.token}`
-        }
-      })
-      .then(() => {
-        this.cargarPersonas();
-        this.setState({ nombres: '', apellidos: '', documento: '' });
-      })
-      .catch(error => {
-        console.error('Error al agregar persona:', error);
-      });
-    }
+  onUpdatePersona = (id, updatedPersona) => {
+    this.setState(prevState => ({
+      personas: prevState.personas.map(persona => persona._id === id ? updatedPersona : persona),
+      editando: false,
+      personaEditando: null
+    }));
   };
 
   manejarEditar = (persona) => {
     this.setState({
-      nombres: persona.nombres,
-      apellidos: persona.apellidos,
-      documento: persona.documento,
       editando: true,
-      personaId: persona.persona_id
+      personaEditando: persona
     });
   };
 
   manejarEliminar = (persona_id) => {
-    const url = `https://personas.ctpoba.edu.ar/api/personas/${persona_id}`;
-    const config = {
+    axios.delete(`https://personas.ctpoba.edu.ar/api/personas/${persona_id}`, {
       headers: {
-        Authorization: this.props.token
+        Authorization: `${this.props.token}`
       }
-    };
-  
-    axios.delete(url, config)
-      .then((response) => {
-        if (response.data.status === "ok") {
-          alert("Se ha eliminado correctamente a la persona");
-          this.cargarPersonas();
-        } else {
-          alert('Hubo un error al eliminar a la persona.');
-        }
-      })
-      .catch((error) => {
-        console.error('Error al eliminar persona:', error);
-      });
+    })
+    .then(response => {
+      if (response.data.status === "ok") {
+        this.setState(prevState => ({
+          personas: prevState.personas.filter(persona => persona._id !== persona_id)
+        }));
+        alert("Se ha eliminado correctamente a la persona");
+      } else {
+        alert('Hubo un error al eliminar a la persona.');
+      }
+    })
+    .catch(error => {
+      console.error('Error al eliminar persona:', error);
+    });
   };
-  
 
   render() {
-    const { personas, nombres, apellidos, documento, editando } = this.state;
+    const { personas, editando, personaEditando } = this.state;
+    const { token } = this.props;
 
     return (
       <div>
         <h2>Gestionar Personas</h2>
-        <form onSubmit={this.manejarSubmit}>
-          <input
-            type="text"
-            name="nombres"
-            value={nombres}
-            onChange={this.manejarChange}
-            placeholder="Nombres"
-            required
+        {editando ? (
+          <EditarPersona
+            token={token}
+            persona={personaEditando}
+            onUpdatePersona={this.onUpdatePersona}
           />
-          <input
-            type="text"
-            name="apellidos"
-            value={apellidos}
-            onChange={this.manejarChange}
-            placeholder="Apellidos"
-            required
+        ) : (
+          <AgregarPersona
+            token={token}
+            onAddPersona={this.onAddPersona}
           />
-          <input
-            type="text"
-            name="documento"
-            value={documento}
-            onChange={this.manejarChange}
-            placeholder="Documento"
-            required
-          />
-          <button type="submit">{editando ? 'Actualizar' : 'Agregar'}</button>
-        </form>
+        )}
         <ul>
           {personas.map((persona) => (
-            <li key={persona.persona_id}>
+            <li key={persona._id}>
               {persona.nombres} {persona.apellidos} - {persona.documento}
               <button onClick={() => this.manejarEditar(persona)}>Editar</button>
-              <button onClick={() => this.manejarEliminar(persona.persona_id)}>Eliminar</button>
+              <button onClick={() => this.manejarEliminar(persona._id)}>Eliminar</button>
             </li>
           ))}
         </ul>
