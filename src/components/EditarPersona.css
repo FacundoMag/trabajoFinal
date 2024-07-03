@@ -1,0 +1,61 @@
+.Cuadro {
+    background: linear-gradient(to right, #00c6ff, #0072ff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.Dato {
+    width: calc(100% - 20px);
+    padding: 15px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.Dato:focus {
+    border-color: #0072ff;
+    outline: none;
+}
+
+.Boton {
+    width: 100%;
+    padding: 15px;
+    margin-top: 20px;
+    background-color: #0072ff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+}
+
+.Boton:hover {
+    background-color: #005bb5;
+}
+
+.Cuadro .Dato[type="date"] {
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+@media (max-width: 600px) {
+    .Dato {
+        padding: 12px;
+        font-size: 14px;
+    }
+    .Boton {
+        padding: 12px;
+        font-size: 14px;
+    }
+}

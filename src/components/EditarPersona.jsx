@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import './EditarPersona.css';
 
 class EditarPersona extends Component {
   state = {
