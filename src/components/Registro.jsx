@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import './Registro.css';
 
 export default class Registro extends Component {
   state = {
@@ -25,7 +26,7 @@ export default class Registro extends Component {
 
   render() {
     return (
-      <div>
+      <div className="container">
         <h2>Registro</h2>
         <input name="user" placeholder="Usuario" onChange={this.manejarCambio} />
         <input name="pass" placeholder="Contraseña" onChange={this.manejarCambio} type="password" />

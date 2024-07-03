@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import './AgregarPersona.css';
 
 class AgregarPersona extends Component {
   state = {
@@ -22,8 +23,8 @@ class AgregarPersona extends Component {
     const datosPersona = { nombres, apellidos, documento };
 
     if (persona) {
-      const url = `https://personas.ctpoba.edu.ar/api/personas/${persona._id}`;
-      axios.put(url, datosPersona, {
+      // Actualizar persona existente
+      axios.put(`https://personas.ctpoba.edu.ar/api/personas/${persona._id}`, datosPersona, {
         headers: {
           Authorization: `${token}`
         }
@@ -35,8 +36,8 @@ class AgregarPersona extends Component {
         console.error('Error al editar persona:', error.response ? error.response.data : error.message);
       });
     } else {
-      const url = 'https://personas.ctpoba.edu.ar/api/personas';
-      axios.post(url, datosPersona, {
+      // Agregar nueva persona
+      axios.post('https://personas.ctpoba.edu.ar/api/personas', datosPersona, {
         headers: {
           Authorization: `${token}`
         }
@@ -77,7 +78,7 @@ class AgregarPersona extends Component {
           onChange={this.manejarChange}
           placeholder="Documento"
         />
-        <button type="submit">{persona ? 'Actualizar Persona' : 'Agregar Persona'}</button>
+        <button type="submit">{persona ? 'Editar Persona' : 'Agregar Persona'}</button>
       </form>
     );
   }
