@@ -51,7 +51,7 @@ class GestionarPersonas extends Component {
         }
       })
       .then(() => {
-        this.cargarPersonas();
+        this.cargarPersona();
         this.setState({ nombres: '', apellidos: '', documento: '', editando: false, personaId: null });
       })
       .catch(error => {
@@ -65,7 +65,7 @@ class GestionarPersonas extends Component {
         }
       })
       .then(() => {
-        this.cargarPersonas();
+        this.cargarPersona();
         this.setState({ nombres: '', apellidos: '', documento: '' });
       })
       .catch(error => {
