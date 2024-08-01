@@ -28,7 +28,7 @@ class GestionarPersonas extends Component {
       this.setState({ personas });
     })
     .catch(error => {
-      console.error('Error al cargar personas:', error);
+      console.error('Error al cargar personas:', error.response ? error.response.data : error.message);
     });
   };
 
@@ -43,33 +43,38 @@ class GestionarPersonas extends Component {
     const { nombres, apellidos, documento, editando, personaId } = this.state;
     const datosPersona = { nombres, apellidos, documento };
 
+    if (!this.props.token) {
+      console.error('Token de autorización no disponible');
+      return;
+    }
+
     if (editando) {
       // Editar persona existente
       axios.put(`https://personas.ctpoba.edu.ar/api/personas/${personaId}`, datosPersona, {
         headers: {
-          Authorization: `${this.props.token}`
+          Authorization: `Bearer ${this.props.token}`
         }
       })
       .then(() => {
-        this.cargarPersona();
+        this.cargarPersonas();
         this.setState({ nombres: '', apellidos: '', documento: '', editando: false, personaId: null });
       })
       .catch(error => {
-        console.error('Error al editar persona:', error);
+        console.error('Error al editar persona:', error.response ? error.response.data : error.message);
       });
     } else {
       // Agregar nueva persona
-      axios.post('https://personas.ctpoba.edu.ar/api/personas', nombres, apellidos, documento, {
+      axios.post('https://personas.ctpoba.edu.ar/api/personas', datosPersona, {
         headers: {
-          Authorization: `${this.props.token}`
+          Authorization: `Bearer ${this.props.token}`
         }
       })
       .then(() => {
-        this.cargarPersona();
+        this.cargarPersonas();
         this.setState({ nombres: '', apellidos: '', documento: '' });
       })
       .catch(error => {
-        console.error('Error al agregar persona:', error);
+        console.error('Error al agregar persona:', error.response ? error.response.data : error.message);
       });
     }
   };
@@ -81,15 +86,20 @@ class GestionarPersonas extends Component {
       apellidos: persona.apellidos || '',
       documento: persona.documento || '',
       editando: true,
-      personaId: persona.persona_id
+      personaId: persona._id
     });
   };
 
   manejarEliminar = (personaId) => {
+    if (!this.props.token) {
+      console.error('Token de autorización no disponible');
+      return;
+    }
+
     // Eliminar persona por ID
     axios.delete(`https://personas.ctpoba.edu.ar/api/personas/${personaId}`, {
       headers: {
-        Authorization: `${this.props.token}`
+        Authorization: `Bearer ${this.props.token}`
       }
     })
     .then(() => {
@@ -97,7 +107,7 @@ class GestionarPersonas extends Component {
       console.log('Persona eliminada correctamente');
     })
     .catch(error => {
-      console.error('Error al eliminar persona:', error);
+      console.error('Error al eliminar persona:', error.response ? error.response.data : error.message);
     });
   };
 
@@ -134,11 +144,13 @@ class GestionarPersonas extends Component {
 
         <h2>Lista de Personas</h2>
         <ul>
+
           {personas.map((persona) => (
             <li key={persona._id}>
               {persona.nombres} {persona.apellidos} - {persona.documento}
               <button onClick={() => this.manejarEditar(persona)}>Editar</button>
-              <button onClick={() => this.manejarEliminar(persona.persona_id)}>Eliminar</button>
+              <button onClick={() => this.manejarEliminar(persona._id)}>Eliminar</button>
+          
             </li>
           ))}
         </ul>

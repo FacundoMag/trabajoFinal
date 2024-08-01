@@ -16,21 +16,20 @@ class AgregarPersona extends Component {
   };
 
   manejarSubmit = (event) => {
+    console.log("no");
     event.preventDefault();
     const { nombres, apellidos, documento } = this.state;
     const { persona, token, onAddPersona, onUpdatePersona } = this.props;
-
     const datosPersona = { nombres, apellidos, documento };
-
     if (persona) {
       // Actualizar persona existente
       axios.put(`https://personas.ctpoba.edu.ar/api/personas/${persona._id}`, datosPersona, {
         headers: {
-          Authorization: `${token}`
+          Authorization: `bearer${token}`
         }
       })
       .then(response => {
-        onUpdatePersona(persona._id, response.data.persona);
+        onUpdatePersona(persona._id, response.data.persona); // Asegúrate de que response.data.persona es correcto
       })
       .catch(error => {
         console.error('Error al editar persona:', error.response ? error.response.data : error.message);
@@ -39,11 +38,13 @@ class AgregarPersona extends Component {
       // Agregar nueva persona
       axios.post('https://personas.ctpoba.edu.ar/api/personas', datosPersona, {
         headers: {
-          Authorization: `${token}`
+          Authorization: `bearer${token}`
         }
+
       })
       .then(response => {
-        onAddPersona(response.data.persona);
+        onAddPersona(response.data.persona); // Asegúrate de que response.data.persona es correcto
+        console.log(response);
       })
       .catch(error => {
         console.error('Error al agregar persona:', error.response ? error.response.data : error.message);

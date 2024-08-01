@@ -61,7 +61,7 @@ class EditarPersona extends Component {
     };
     const config = {
       headers: {
-        Authorization: token
+        Authorization: `bearer ${token}`
       }
     };
 
@@ -79,78 +79,90 @@ class EditarPersona extends Component {
   };
 
   render() {
+    const { id, dni, nombre, apellido, fecNac, numCel, domicilio, mail} = this.state;
+
     return (
       <div className='Cuadro'>
         <h2>EDITAR DATOS DE PERSONA</h2>
+        <form onSubmit={this.manejarSubmit}>
         <input 
-          type="number" 
-          className='Dato' 
-          name='id'
-          placeholder='ID del usuario'
-          onChange={this.manejarChange}
-          required
-        />
-        <input 
-          type="text" 
-          className='Dato' 
-          name='dni'
-          placeholder='D.N.I'
-          onChange={this.manejarChange}
-          required
-        />
-        <input 
-          type="text" 
-          className='Dato' 
-          name='nombre'
-          placeholder='Nombre' 
-          onChange={this.manejarChange}
-          required
-        />
-        <input 
-          type="text" 
-          className='Dato' 
-          name='apellido'
-          placeholder='Apellido' 
-          onChange={this.manejarChange}
-          required
-        />
-        <input 
-          type="date" 
-          className='Dato'
-          style={{ width: '222.5px' }}
-          name='fecNac'
-          placeholder='Fecha de nacimiento' 
-          onChange={this.manejarChange}
-          required
-        />
-        <input 
-          type="number" 
-          className='Dato' 
-          name='numCel'
-          placeholder='Numero de celular'
-          onChange={this.manejarChange}
-          required
-        />
-        <input 
-          type="text" 
-          className='Dato' 
-          name='domicilio'
-          placeholder='Domicilio'
-          onChange={this.manejarChange}
-          required
-        />
-        <input 
-          type="text" 
-          className='Dato' 
-          name='mail'
-          placeholder='E-mail'
-          onChange={this.manejarChange}
-          required
-        />
+            type="number" 
+            className='Dato' 
+            name='id'
+            value={id}
+            placeholder='ID del usuario'
+            onChange={this.manejarChange}
+            required
+          />
+          <input 
+            type="text" 
+            className='Dato' 
+            name='dni'
+            value={dni}
+            placeholder='D.N.I'
+            onChange={this.manejarChange}
+            required
+          />
+          <input 
+            type="text" 
+            className='Dato' 
+            name='nombre'
+            value={nombre}
+            placeholder='Nombre' 
+            onChange={this.manejarChange}
+            required
+          />
+          <input 
+            type="text" 
+            className='Dato' 
+            name='apellido'
+            value={apellido}
+            placeholder='Apellido' 
+            onChange={this.manejarChange}
+            required
+          />
+          <input 
+            type="date" 
+            className='Dato'
+            style={{ width: '222.5px' }}
+            name='fecNac'
+            value={fecNac}
+            placeholder='Fecha de nacimiento' 
+            onChange={this.manejarChange}
+            required
+          />
+          <input 
+            type="number" 
+            className='Dato' 
+            name='numCel'
+            value={numCel}
+            placeholder='Numero de celular'
+            onChange={this.manejarChange}
+            required
+          />
+          <input 
+            type="text" 
+            className='Dato' 
+            name='domicilio'
+            value={domicilio}
+            placeholder='Domicilio'
+            onChange={this.manejarChange}
+            required
+          />
+          <input 
+            type="text" 
+            className='Dato' 
+            name='mail'
+            value={mail}
+            placeholder='E-mail'
+            onChange={this.manejarChange}
+            required
+          />
         <button
           className='Boton'
-          onClick={this.manejarSubmit}
+          type="submit"
         >Cambiar datos</button>
+        </form>
       </div>
     );
   }

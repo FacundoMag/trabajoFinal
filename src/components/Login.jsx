@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
-import './Login.css'
+import './Login.css';
+
 
 export default class Login extends Component {
   state = {
@@ -14,8 +15,12 @@ export default class Login extends Component {
 
   manejarLogin = async () => {
     try {
-      const response = await axios.post("https://personas.ctpoba.edu.ar/api/ingresar", this.state);
+      const response = await axios.post("https://personas.ctpoba.edu.ar/api/ingresar", {
+        user: this.state.user,
+        pass: this.state.pass
+      });
       this.props.manejarLogin(response.data.user, response.data.token);
+      console.log(response.data.token)
     } catch (error) {
       console.error(error);
     }
