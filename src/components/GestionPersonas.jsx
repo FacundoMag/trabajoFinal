@@ -144,13 +144,11 @@ class GestionarPersonas extends Component {
 
         <h2>Lista de Personas</h2>
         <ul>
-
           {personas.map((persona) => (
             <li key={persona._id}>
               {persona.nombres} {persona.apellidos} - {persona.documento}
-              <button onClick={() => this.manejarEditar(persona)}>Editar</button>
-              <button onClick={() => this.manejarEliminar(persona._id)}>Eliminar</button>
-          
+              <button className='editar' onClick={() => this.manejarEditar(persona)}>Editar</button>
+              <button className='eliminar' onClick={() => this.manejarEliminar(persona._id)}>Eliminar</button>
             </li>
           ))}
         </ul>
